@@ -36,6 +36,7 @@
         top: 0;
         right: 0;
         height: 100vh;
+        overflow-y: auto;
         transform: translateX(100%);
         /* ← verborgen rechts buiten beeld */
         transition: transform 0.3s ease;
@@ -423,7 +424,7 @@
 <body>
 
   <button id="menu-toggle" onclick="toggleSidebar()">☰</button>
-  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <div id="sidebar-overlay"></div>
 
   <div id="map"></div>
 
@@ -741,6 +742,16 @@
       document.getElementById("sidebar").classList.toggle("open");
       document.getElementById("sidebar-overlay").classList.toggle("open");
     }
+    // Voorkom dat klikken binnen de sidebar de overlay triggert
+
+    // Voorkom dat klikken binnen de sidebar de overlay triggert
+    document.getElementById("sidebar").addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+    document.getElementById("sidebar-overlay").addEventListener("click", function () {
+      toggleSidebar();
+    });
+
 
   </script>
 </body>
