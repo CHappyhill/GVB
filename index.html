@@ -1,0 +1,686 @@
+﻿<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gifvrije Bloemen Webkaart</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+      background: #1a1a2e;
+      color: #eee;
+    }
+
+    /* ── Kaart links ── */
+    #map {
+      flex: 1;
+      height: 100vh;
+    }
+
+    /* ── Sidebar rechts ── */
+    #sidebar {
+      width: 230px;
+      flex-shrink: 0;
+      background: #16213e;
+      border-left: 1px solid #0f3460;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    /* Titel blok */
+    .sidebar-title {
+      background: #0f3460;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid #1e4a80;
+    }
+
+    .sidebar-title h1 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+    }
+
+    .sidebar-title p {
+      font-size: 0.72rem;
+      color: #e2e8f0;
+      margin-top: 3px;
+    }
+
+    /* Secties */
+    .sidebar-section {
+      padding: 12px 12px 14px;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    /* ── Kaartlagen (radio stijl) ── */
+    .layer-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .layer-option:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .layer-option.active {
+      color: #e2e8f0;
+    }
+
+    .layer-radio {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid #334155;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s;
+    }
+
+    .layer-option.active .layer-radio {
+      border-color: #60a5fa;
+    }
+
+    .layer-radio-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #60a5fa;
+      display: none;
+    }
+
+    .layer-option.active .layer-radio-dot {
+      display: block;
+    }
+
+    .overlay-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      transition: background 0.15s;
+      user-select: none;
+      margin-top: 4px;
+    }
+
+    .overlay-toggle:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .overlay-toggle.active {
+      color: #e2e8f0;
+    }
+
+    .overlay-check {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1.5px solid #334155;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #60a5fa;
+      transition: border-color 0.15s;
+    }
+
+    .overlay-toggle.active .overlay-check {
+      border-color: #60a5fa;
+      background: rgba(96, 165, 250, 0.15);
+    }
+
+    /* ── Filter groepen ── */
+    .group-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+
+    .filter-group {
+      margin-bottom: 12px;
+    }
+
+    .filter-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .filter-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .filter-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 4px;
+      border-radius: 7px;
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: #94a3b8;
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+    }
+
+    .filter-btn.active {
+      border-color: var(--cat-color, #60a5fa);
+      background: color-mix(in srgb, var(--cat-color, #60a5fa) 15%, transparent);
+      color: #e2e8f0;
+    }
+
+    .filter-btn img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    /* Teller */
+    #count-badge {
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      color: #64748b;
+      text-align: center;
+    }
+
+    /* Credits onderaan */
+    .sidebar-credits {
+      margin-top: auto;
+      background: #0f3460;
+      padding: 10px 14px;
+      border-top: 1px solid #1e4a80;
+      font-size: 0.7rem;
+      color: #e2e8f0;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ── Popup styling ── */
+    .leaflet-popup-content-wrapper {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      padding: 0;
+    }
+
+    .leaflet-popup-tip {
+      background: #1e293b;
+    }
+
+    .leaflet-popup-close-button {
+      color: #94a3b8 !important;
+      font-size: 18px !important;
+    }
+
+    .popup-inner {
+      padding: 14px 16px;
+      min-width: 180px;
+      max-width: 260px;
+    }
+
+    .popup-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .popup-icon {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .popup-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: #f1f5f9;
+    }
+
+    .popup-address {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .popup-category {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: rgba(96, 165, 250, 0.15);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      color: #93c5fd;
+      margin-bottom: 8px;
+    }
+
+    .popup-extra {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      border-top: 1px solid #334155;
+      padding-top: 8px;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .popup-extra span {
+      color: #64748b;
+      margin-right: 4px;
+    }
+
+    .popup-extra a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    .popup-extra a:hover {
+      text-decoration: underline;
+    }
+
+    .layer-option a,
+    .overlay-toggle a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    .layer-option a:hover,
+    .overlay-toggle a:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar-credits a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    .sidebar-credits a:hover {
+      text-decoration: underline;
+    }
+
+    /* Leaflet lagen control rechtsbovenin verbergen — wij doen het zelf */
+    .leaflet-control-layers {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="map"></div>
+
+  <div id="sidebar">
+
+    <!-- Titel -->
+    <div class="sidebar-title">
+      <h1>🌸 Gifvrije Bloemen</h1>
+      <p>Kaartoverzicht van kwekerijen, productielocaties en verkooppunten van gifvrije bloemen en voedsel in de
+        omgeving Ede-Wageningen-Arnhem. </p>
+    </div>
+
+    <!-- Filter groepen -->
+    <div class="sidebar-section" style="flex:1">
+      <div class="section-label">Categorieën</div>
+
+      <div class="filter-group">
+        <div class="group-label">Bloemen | Kwekerij of Pluktuin</div>
+        <div id="filters-a" class="filter-list"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="group-label">Bloemen | Verkoop</div>
+        <div id="filters-b" class="filter-list"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="group-label">Voedsel | Productie of Oogsttuin</div>
+        <div id="filters-c" class="filter-list"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="group-label">Voedsel | Verkoop</div>
+        <div id="filters-d" class="filter-list"></div>
+      </div>
+
+      <div id="count-badge"></div>
+    </div>
+
+    <!-- Kaartlagen -->
+    <div class="sidebar-section">
+      <div class="section-label">Kaartlagen</div>
+      <div class="layer-option active" id="layer-osm" onclick="switchLayer('osm')">
+        <div class="layer-radio">
+          <div class="layer-radio-dot"></div>
+        </div>
+        <span>🗺️ Topografische kaart (<a href="https://www.openstreetmap.org" target="_blank"
+            onclick="event.stopPropagation()">OSM</a>)</span>
+      </div>
+
+      <div class="layer-option" id="layer-pdok" onclick="switchLayer('pdok')">
+        <div class="layer-radio">
+          <div class="layer-radio-dot"></div>
+        </div>
+        <span>🛰️ Luchtfoto (<a href="https://www.pdok.nl" target="_blank"
+            onclick="event.stopPropagation()">PDOK</a>)</span>
+      </div>
+
+      <div class="overlay-toggle" id="overlay-labels" onclick="toggleOverlay()">
+        <div class="overlay-check" id="overlay-check"></div>
+        <span>🏷️ Wegen &amp; namen (<a href="https://www.openstreetmap.org" target="_blank"
+            onclick="event.stopPropagation()">OSM</a>)</span>
+      </div>
+    </div>
+
+    <!-- Credits -->
+    <div class="sidebar-credits">
+      © 2026 CHappyhill | <a href="https://groenekerken.nl/">Groene Kerken</a><br>
+      Contact: <a href="mailto:jouw@email.nl">André Noorlander</a> 
+    </div>
+
+  </div>
+
+  <!-- GeoJSON data (gegenereerd vanuit R) -->
+  <script src="material/GVBlokaties.js"></script>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+
+    const PROP_NAME = "Naam";
+    const PROP_ADDRESS = "Adres";
+    const PROP_CATEGORY = "Symbool";
+    const PROP_EXTRA = ["Opmerking", "Gifvrij?", "Label", "Categorie", "URL"];
+
+    const ICON_MAP = {
+      "Bloem - groen": "material/Bloem-groen.png",
+      "Bloem - geel": "material/Bloem-geel.png",
+      "Bloem - oranje": "material/Bloem-oranje.png",
+      "Bloem huis - groen": "material/Bloemhuis-groen.png",
+      "Bloem huis - geel": "material/Bloemhuis-geel.png",
+      "Bloem huis - oranje": "material/Bloemhuis-oranje.png",
+      "Appel - groen": "material/Appel-groen.png",
+      "Appel - geel": "material/Appel-geel.png",
+      "Appel - oranje": "material/Appel-oranje.png",
+      "Appel huis - groen": "material/Appelhuis-groen.png",
+      "Appel huis - geel": "material/Appelhuis-geel.png",
+      "Appel huis - oranje": "material/Appelhuis-oranje.png",
+    };
+    const DEFAULT_ICON = "material/questionsign.png";
+
+    const COLOR_MAP = {
+      "Bloem - groen": "#22c55e",
+      "Bloem - geel": "#eab308",
+      "Bloem - oranje": "#f97316",
+      "Bloem huis - groen": "#22c55e",
+      "Bloem huis - geel": "#eab308",
+      "Bloem huis - oranje": "#f97316",
+      "Appel - groen": "#22c55e",
+      "Appel - geel": "#eab308",
+      "Appel - oranje": "#f97316",
+      "Appel huis - groen": "#22c55e",
+      "Appel huis - geel": "#eab308",
+      "Appel huis - oranje": "#f97316",
+    };
+    const DEFAULT_COLOR = "#60a5fa";
+
+    const ICON_SIZE = [36, 36];
+
+    // Groepen: sleutels = container-id, waarden = exacte categorienamen
+    const GROUPS = {
+      "filters-a": ["Bloem - groen", "Bloem - oranje", "Bloem - geel"],
+      "filters-b": ["Bloem huis - groen", "Bloem huis - oranje", "Bloem huis - geel"],
+      "filters-c": ["Appel - groen", "Appel - oranje", "Appel - geel"],
+      "filters-d": ["Appel huis - groen", "Appel huis - oranje", "Appel huis - geel"],
+    };
+
+    // ═══════════════════════════════════════════
+    // Kaart & lagen
+    // ═══════════════════════════════════════════
+
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({ iconUrl: '', shadowUrl: '', iconRetinaUrl: '' });
+
+    const map = L.map("map", { zoomControl: true });
+
+    const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19, opacity: 0.7,
+    }).addTo(map);
+
+    const pdok = L.tileLayer(
+      "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_ortho25/EPSG:3857/{z}/{x}/{y}.jpeg",
+      { attribution: '© <a href="https://www.pdok.nl">PDOK</a>', maxZoom: 19 }
+    );
+
+    const osmLabels = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19, opacity: 0.5,
+    });
+
+    let activeBase = osm;
+    let overlayActive = false;
+
+    function switchLayer(which) {
+      activeBase.remove();
+      osmLabels.remove();
+      activeBase = which === 'osm' ? osm : pdok;
+      activeBase.addTo(map);
+      if (overlayActive) osmLabels.addTo(map);
+
+      document.getElementById('layer-osm').classList.toggle('active', which === 'osm');
+      document.getElementById('layer-pdok').classList.toggle('active', which === 'pdok');
+    }
+
+    function toggleOverlay() {
+      overlayActive = !overlayActive;
+      overlayActive ? osmLabels.addTo(map) : osmLabels.remove();
+      document.getElementById('overlay-labels').classList.toggle('active', overlayActive);
+      document.getElementById('overlay-check').textContent = overlayActive ? '✓' : '';
+    }
+
+    // ═══════════════════════════════════════════
+    // Iconen & popups
+    // ═══════════════════════════════════════════
+
+    function makeIcon(category) {
+      const url = ICON_MAP[category] || DEFAULT_ICON;
+      return L.icon({
+        iconUrl: url,
+        iconSize: ICON_SIZE,
+        iconAnchor: [ICON_SIZE[0] / 2, ICON_SIZE[1]],
+        popupAnchor: [0, -(ICON_SIZE[1] + 4)],
+        shadowUrl: '',
+      });
+    }
+
+    function buildPopup(props) {
+      const category = props[PROP_CATEGORY] || "";
+      const iconUrl = ICON_MAP[category] || DEFAULT_ICON;
+      const name = props[PROP_NAME] || "";
+      const address = props[PROP_ADDRESS] || "";
+
+      let extraHtml = "";
+      PROP_EXTRA.forEach(key => {
+        const val = props[key];
+        if (val == null || val === "") return;
+        if (String(val).startsWith("http")) {
+          extraHtml += `<div><span>${key}:</span><a href="${val}" target="_blank">${val}</a></div>`;
+        } else {
+          extraHtml += `<div><span>${key}:</span>${val}</div>`;
+        }
+      });
+
+      return `
+        <div class="popup-inner">
+          <div class="popup-header">
+            <img class="popup-icon" src="${iconUrl}" alt="${category}" onerror="this.style.display='none'">
+            <div class="popup-title">${name}</div>
+          </div>
+          <div class="popup-address">${address}</div>
+          <div class="popup-category">${category}</div>
+          ${extraHtml ? `<div class="popup-extra">${extraHtml}</div>` : ""}
+        </div>`;
+    }
+
+    // ═══════════════════════════════════════════
+    // Markers laden vanuit GeoJSON
+    // ═══════════════════════════════════════════
+
+    const allMarkers = [];
+    const categories = new Set();
+
+    geojsonData.features.forEach(feature => {
+      const props = feature.properties;
+      const coords = feature.geometry.coordinates;
+      const cat = props[PROP_CATEGORY] || "overig";
+
+      categories.add(cat);
+
+      const marker = L.marker([coords[1], coords[0]], { icon: makeIcon(cat) })
+        .bindPopup(buildPopup(props), { maxWidth: 300 })
+        .bindTooltip(props[PROP_NAME] || props[PROP_ADDRESS] || "", {
+          direction: "top",
+          offset: [0, -(ICON_SIZE[1] + 4)],
+        });
+
+      marker.addTo(map);
+      allMarkers.push({ marker, category: cat });
+    });
+
+    if (allMarkers.length > 0) {
+      const group = L.featureGroup(allMarkers.map(m => m.marker));
+      map.fitBounds(group.getBounds(), { padding: [40, 40] });
+    }
+
+    // ═══════════════════════════════════════════
+    // Filter knoppen
+    // ═══════════════════════════════════════════
+
+    const activeCategories = new Set(categories);
+    const countBadge = document.getElementById("count-badge");
+
+    function updateCount() {
+      const visible = allMarkers.filter(m => activeCategories.has(m.category)).length;
+      countBadge.textContent = `${visible} van de ${allMarkers.length} locaties zichtbaar`;
+    }
+
+    function applyFilter() {
+      allMarkers.forEach(({ marker, category }) => {
+        activeCategories.has(category) ? marker.addTo(map) : marker.remove();
+      });
+      updateCount();
+    }
+
+    Object.entries(GROUPS).forEach(([containerId, cats]) => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      cats.forEach(cat => {
+        const color = COLOR_MAP[cat] || DEFAULT_COLOR;
+        const iconUrl = ICON_MAP[cat] || DEFAULT_ICON;
+
+        const btn = document.createElement("button");
+        btn.className = "filter-btn active";
+        btn.style.setProperty("--cat-color", color);
+
+
+        const LABEL_MAP = {
+          "Bloem - groen": "100% Gifvrij",
+          "Bloem - geel": "niet biologisch",
+          "Bloem - oranje": "soms gifvrij",
+          "Bloem huis - groen": "100% Gifvrij",
+          "Bloem huis - geel": "deels gifvrij",
+          "Bloem huis - oranje": "soms gifvrij",
+          "Appel - groen": "100% Gifvrij",
+          "Appel - geel": "niet biologisch",
+          "Appel - oranje": "soms gifvrij",
+          "Appel huis - groen": "100% Gifvrij",
+          "Appel huis - geel": "deels gifvrij",
+          "Appel huis - oranje": "soms gifvrij",
+        };
+
+        const label = LABEL_MAP[cat] || (cat.includes(" - ") ? cat.split(" - ").pop() : cat);
+        btn.innerHTML = `<img src="${iconUrl}" alt="" onerror="this.style.display='none'">${label}`;
+
+        btn.addEventListener("click", () => {
+          if (activeCategories.has(cat)) {
+            activeCategories.delete(cat);
+            btn.classList.remove("active");
+          } else {
+            activeCategories.add(cat);
+            btn.classList.add("active");
+          }
+          applyFilter();
+        });
+
+        container.appendChild(btn);
+      });
+    });
+
+    updateCount();
+
+  </script>
+</body>
+
+</html>
