@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    /* Hamburger knop */
     #menu-toggle {
       display: none;
       position: fixed;
@@ -25,7 +24,6 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
-    /* Mobiel gedrag */
     @media (max-width: 768px) {
       #menu-toggle {
         display: block;
@@ -38,7 +36,6 @@
         height: 100vh;
         overflow-y: auto;
         transform: translateX(100%);
-        /* ← verborgen rechts buiten beeld */
         transition: transform 0.3s ease;
         z-index: 1500;
         width: 260px;
@@ -46,10 +43,8 @@
 
       #sidebar.open {
         transform: translateX(0);
-        /* ← inschuiven */
       }
 
-      /* Donker overlay achter sidebar */
       #sidebar-overlay {
         display: none;
         position: fixed;
@@ -80,15 +75,13 @@
       color: #eee;
     }
 
-    /* ── Kaart links ── */
     #map {
       flex: 1;
       height: 100vh;
     }
 
-    /* ── Sidebar rechts ── */
     #sidebar {
-      width: 230px;
+      width: 350px;
       flex-shrink: 0;
       background: #16213e;
       border-left: 1px solid #0f3460;
@@ -98,7 +91,6 @@
       z-index: 1000;
     }
 
-    /* Titel blok */
     .sidebar-title {
       background: #0f3460;
       padding: 14px 14px 12px;
@@ -119,7 +111,6 @@
       margin-top: 3px;
     }
 
-    /* Secties */
     .sidebar-section {
       padding: 12px 12px 14px;
       border-bottom: 1px solid #0f3460;
@@ -134,7 +125,6 @@
       margin-bottom: 8px;
     }
 
-    /* ── Kaartlagen (radio stijl) ── */
     .layer-option {
       display: flex;
       align-items: center;
@@ -143,7 +133,7 @@
       border-radius: 7px;
       cursor: pointer;
       font-size: 0.82rem;
-      color: #94a3b8;
+      color: #cbd5e1;
       transition: background 0.15s;
       user-select: none;
     }
@@ -192,7 +182,7 @@
       border-radius: 7px;
       cursor: pointer;
       font-size: 0.82rem;
-      color: #94a3b8;
+      color: #cbd5e1;
       transition: background 0.15s;
       user-select: none;
       margin-top: 4px;
@@ -225,7 +215,6 @@
       background: rgba(96, 165, 250, 0.15);
     }
 
-    /* ── Filter groepen ── */
     .group-label {
       font-size: 0.65rem;
       font-weight: 700;
@@ -245,47 +234,76 @@
 
     .filter-list {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 4px;
     }
 
-    .filter-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding: 6px 4px;
-      border-radius: 7px;
-      border: 1.5px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.03);
-      color: #94a3b8;
-      font-size: 0.65rem;
-      cursor: pointer;
-      transition: all 0.15s;
+    .filter-list.cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-matrix {
+      display: grid;
+      grid-template-columns: 50px repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    /* kolom headers */
+    .matrix-header {
+      font-size: 0.6rem;
       text-align: center;
-      line-height: 1.2;
+      color: #e2e8f0;
+      font-weight: 700;
+      line-height: 1.1;
+
+      padding: 2px;
+
+      /* 🔥 essentieel */
+      overflow-wrap: break-word;
       word-break: break-word;
     }
 
-    .filter-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #cbd5e1;
+    /* rij labels */
+    .matrix-row-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      padding-left: 4px;
     }
 
-    .filter-btn.active {
-      border-color: var(--cat-color, #60a5fa);
-      background: color-mix(in srgb, var(--cat-color, #60a5fa) 15%, transparent);
+    /* vierkante blokjes */
+
+    .filter-btn img {
+      width: 22px;
+      height: 26px;
+    }
+
+    .filter-count {
+      font-size: 0.65rem;
+      font-weight: 700;
       color: #e2e8f0;
     }
 
     .filter-btn img {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
+      width: 20px;
+      height: 24px;
     }
 
-    /* Teller */
+    .filter-label {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+    }
+
+    /* .filter-count {
+      font-size: 0.5rem;
+      opacity: 0.7;
+    } */
+
     #count-badge {
       padding: 8px 12px;
       font-size: 0.72rem;
@@ -293,7 +311,31 @@
       text-align: center;
     }
 
-    /* Credits onderaan */
+    /* actief */
+    .filter-btn.active {
+      border-color: var(--cat-color);
+      background: color-mix(in srgb, var(--cat-color) 25%, transparent);
+      opacity: 1;
+    }
+
+    /* inactief = vervaagd */
+    .filter-btn:not(.active) {
+      opacity: 0.35;
+      filter: grayscale(40%);
+    }
+
+    .filter-btn:disabled {
+      opacity: 0.15;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* hover feedback */
+    .filter-btn:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
     .sidebar-credits {
       margin-top: auto;
       background: #0f3460;
@@ -305,7 +347,6 @@
       line-height: 1.5;
     }
 
-    /* ── Popup styling ── */
     .leaflet-popup-content-wrapper {
       background: #1e293b;
       color: #e2e8f0;
@@ -339,7 +380,7 @@
 
     .popup-icon {
       width: 36px;
-      height: 36px;
+      height: 43px;
       object-fit: contain;
       flex-shrink: 0;
     }
@@ -414,7 +455,6 @@
       text-decoration: underline;
     }
 
-    /* Leaflet lagen control rechtsbovenin verbergen — wij doen het zelf */
     .leaflet-control-layers {
       display: none;
     }
@@ -430,41 +470,30 @@
 
   <div id="sidebar">
 
-    <!-- Titel -->
     <div class="sidebar-title">
       <h1>🌸 Gifvrije Bloemen</h1>
-      <p>Kaartoverzicht van kwekerijen, productielocaties en verkooppunten van gifvrije bloemen en voedsel in de
-        omgeving Ede-Wageningen-Arnhem. </p>
+      <p>Kaartoverzicht van productielocaties en verkooppunten van gifvrije bloemen en voedsel in de
+        omgeving Ede-Wageningen-Arnhem. Gemaakt n.a.v. de inspiratieavond op 26 maart 2026 in de Arboretumkerk in Wageningen. </p>
     </div>
+    
 
-    <!-- Filter groepen -->
+
     <div class="sidebar-section" style="flex:1">
       <div class="section-label">Categorieën</div>
 
-      <div class="filter-group">
-        <div class="group-label">Bloemen | Kwekerij of Pluktuin</div>
-        <div id="filters-a" class="filter-list"></div>
-      </div>
-
-      <div class="filter-group">
-        <div class="group-label">Bloemen | Verkoop</div>
-        <div id="filters-b" class="filter-list"></div>
-      </div>
-
-      <div class="filter-group">
-        <div class="group-label">Voedsel | Productie of Oogsttuin</div>
-        <div id="filters-c" class="filter-list"></div>
-      </div>
-
-      <div class="filter-group">
-        <div class="group-label">Voedsel | Verkoop</div>
-        <div id="filters-d" class="filter-list"></div>
-      </div>
+      <div class="filter-matrix" id="filter-matrix"></div>
 
       <div id="count-badge"></div>
     </div>
+    
+    <div class="sidebar-title">
+      <h1>ℹ️ Toelichting</h1>
+      <p>Hierboven zijn vier categorieën te vinden waarop de locatie gescoord is op mate van gifvrij zijn. De donkergroene locaties zijn 100% gifvrij en ook hiervoor gecertificeerd met het biologisch keurmerk (hieronder aangeduid als "Gifvrij ✓"). 
+        De lichtgroene locaties zijn in zelfverklaard gifvrij maar zonder certificaat (hieronder aangeduid als "Gifvrij"). De oranje locaties zijn grotendeels gifvrij, maar niet geheel of niet voor alle producten (hieronder aangeduid als "Meestal"). 
+        De gele locaties zijn deels gifvrij, wat betekent dat een selectie van het assortiment gifvrij is of alleen een deel van het jaar (hieronder aangeduid als "Soms").
+       </p>
+    </div>
 
-    <!-- Kaartlagen -->
     <div class="sidebar-section">
       <div class="section-label">Kaartlagen</div>
       <div class="layer-option active" id="layer-osm" onclick="switchLayer('osm')">
@@ -474,7 +503,6 @@
         <span>🗺️ Topografische kaart (<a href="https://www.openstreetmap.org" target="_blank"
             onclick="event.stopPropagation()">OSM</a>)</span>
       </div>
-
       <div class="layer-option" id="layer-pdok" onclick="switchLayer('pdok')">
         <div class="layer-radio">
           <div class="layer-radio-dot"></div>
@@ -482,7 +510,6 @@
         <span>🛰️ Luchtfoto (<a href="https://www.pdok.nl" target="_blank"
             onclick="event.stopPropagation()">PDOK</a>)</span>
       </div>
-
       <div class="overlay-toggle" id="overlay-labels" onclick="toggleOverlay()">
         <div class="overlay-check" id="overlay-check"></div>
         <span>🏷️ Wegen &amp; namen (<a href="https://www.openstreetmap.org" target="_blank"
@@ -490,7 +517,6 @@
       </div>
     </div>
 
-    <!-- Credits -->
     <div class="sidebar-credits">
       © 2026 CHappyhill | <a href="https://groenekerken.nl/">Groene Kerken</a><br>
       Contact: <a href="mailto:jouw@email.nl">André Noorlander</a>
@@ -498,60 +524,170 @@
 
   </div>
 
-  <!-- GeoJSON data (gegenereerd vanuit R) -->
   <script src="material/GVBlokaties.js"></script>
-
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
 
+    // ═══════════════════════════════════════════
+    // ✏️  PAS HIER AAN
+    // ═══════════════════════════════════════════
+
     const PROP_NAME = "Naam";
     const PROP_ADDRESS = "Adres";
-    const PROP_CATEGORY = "Symbool";
-    const PROP_EXTRA = ["Opmerking", "Gifvrij?", "Label", "Categorie", "URL"];
+    const PROP_CATEGORY = "Label";
+    const PROP_EXTRA = ["Opmerking", "Gifvrij?", "Categorie", "URL"];
 
-    const ICON_MAP = {
-      "Bloem - groen": "material/Bloem-groen.png",
-      "Bloem - geel": "material/Bloem-geel.png",
-      "Bloem - oranje": "material/Bloem-oranje.png",
-      "Bloem huis - groen": "material/Bloemhuis-groen.png",
-      "Bloem huis - geel": "material/Bloemhuis-geel.png",
-      "Bloem huis - oranje": "material/Bloemhuis-oranje.png",
-      "Appel - groen": "material/Appel-groen.png",
-      "Appel - geel": "material/Appel-geel.png",
-      "Appel - oranje": "material/Appel-oranje.png",
-      "Appel huis - groen": "material/Appelhuis-groen.png",
-      "Appel huis - geel": "material/Appelhuis-geel.png",
-      "Appel huis - oranje": "material/Appelhuis-oranje.png",
-    };
-    const DEFAULT_ICON = "material/questionsign.png";
+    const STATUS_ORDER = [
+      "gifvrij, gecertificeerd",
+      "gifvrij, niet gecertificeerd",
+      "grotendeels gifvrij",
+      "soms gifvrij"
+    ];
 
-    const COLOR_MAP = {
-      "Bloem - groen": "#22c55e",
-      "Bloem - geel": "#eab308",
-      "Bloem - oranje": "#f97316",
-      "Bloem huis - groen": "#22c55e",
-      "Bloem huis - geel": "#eab308",
-      "Bloem huis - oranje": "#f97316",
-      "Appel - groen": "#22c55e",
-      "Appel - geel": "#eab308",
-      "Appel - oranje": "#f97316",
-      "Appel huis - groen": "#22c55e",
-      "Appel huis - geel": "#eab308",
-      "Appel huis - oranje": "#f97316",
+    const COLORS = {
+      gecertificeerd: "#2d9e4f",
+      niet_gecertificeerd: "#7bc47f",
+      grotendeels: "#f97316",
+      soms: "#eab308",
     };
     const DEFAULT_COLOR = "#60a5fa";
 
-    const ICON_SIZE = [36, 36];
-
-    // Groepen: sleutels = container-id, waarden = exacte categorienamen
-    const GROUPS = {
-      "filters-a": ["Bloem - groen", "Bloem - oranje", "Bloem - geel"],
-      "filters-b": ["Bloem huis - groen", "Bloem huis - oranje", "Bloem huis - geel"],
-      "filters-c": ["Appel - groen", "Appel - oranje", "Appel - geel"],
-      "filters-d": ["Appel huis - groen", "Appel huis - oranje", "Appel huis - geel"],
+    // Koppel Label-waarden aan kleur + icoontype
+    const CATEGORY_CONFIG = {
+      "Pluktuin / kwekerij - gifvrij, gecertificeerd": { color: COLORS.gecertificeerd, icon: "bloem" },
+      "Pluktuin / kwekerij - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "bloem" },
+      "Pluktuin / kwekerij - grotendeels gifvrij": { color: COLORS.grotendeels, icon: "bloem" },
+      "Pluktuin / kwekerij - soms gifvrij": { color: COLORS.soms, icon: "bloem" },
+      "Bloemist - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "bloem-huis" },
+      "Bloemist - grotendeels gifvrij": { color: COLORS.grotendeels, icon: "bloem-huis" },
+      "Bloemist - soms gifvrij": { color: COLORS.soms, icon: "bloem-huis" },
+      "Productie / oogsttuin - gifvrij, gecertificeerd": { color: COLORS.gecertificeerd, icon: "appel" },
+      "Productie / oogsttuin - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "appel" },
+      "Verkoop - gifvrij, gecertificeerd": { color: COLORS.gecertificeerd, icon: "appel-huis" },
+      "Verkoop - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "appel-huis" },
+      "Verkoop - grotendeels gifvrij": { color: COLORS.grotendeels, icon: "appel-huis" },
+      "Verkoop - soms gifvrij": { color: COLORS.soms, icon: "appel-huis" },
     };
+
+    // Korte labels voor de filterknopjes
+    const LABEL_MAP = {
+      "Pluktuin / kwekerij - gifvrij, gecertificeerd": "Gifvrij ✓",
+      "Pluktuin / kwekerij - gifvrij, niet gecertificeerd": "Gifvrij",
+      "Pluktuin / kwekerij - grotendeels gifvrij": "Grotendeels",
+      "Pluktuin / kwekerij - soms gifvrij": "Soms",
+      "Bloemist - gifvrij, niet gecertificeerd": "Gifvrij",
+      "Bloemist - grotendeels gifvrij": "Grotendeels",
+      "Bloemist - soms gifvrij": "Soms",
+      "Productie / oogsttuin - gifvrij, gecertificeerd": "Gifvrij ✓",
+      "Productie / oogsttuin - gifvrij, niet gecertificeerd": "Gifvrij",
+      "Verkoop - gifvrij, gecertificeerd": "Gifvrij ✓",
+      "Verkoop - gifvrij, niet gecertificeerd": "Gifvrij",
+      "Verkoop - grotendeels gifvrij": "Grotendeels",
+      "Verkoop - soms gifvrij": "Soms",
+    };
+
+    const GROUP_BASE = {
+      "filters-a": "Pluktuin / kwekerij",
+      "filters-b": "Bloemist",
+      "filters-c": "Productie / oogsttuin",
+      "filters-d": "Verkoop",
+    };
+
+    const GROUPS = {};
+
+    Object.entries(GROUP_BASE).forEach(([id, base]) => {
+      GROUPS[id] = STATUS_ORDER.map(status => `${base} - ${status}`);
+    });
+
+    // // Groepen per filter-container
+    // const GROUPS = {
+    //   "filters-a": [
+    //     "Pluktuin / kwekerij - gifvrij, gecertificeerd",
+    //     "Pluktuin / kwekerij - gifvrij, niet gecertificeerd",
+    //     "Pluktuin / kwekerij - grotendeels gifvrij",
+    //     "Pluktuin / kwekerij - soms gifvrij",
+    //   ],
+    //   "filters-b": [
+    //     "Bloemist - gifvrij, niet gecertificeerd",
+    //     "Bloemist - grotendeels gifvrij",
+    //     "Bloemist - soms gifvrij",
+    //   ],
+    //   "filters-c": [
+    //     "Productie / oogsttuin - gifvrij, gecertificeerd",
+    //     "Productie / oogsttuin - gifvrij, niet gecertificeerd",
+    //   ],
+    //   "filters-d": [
+    //     "Verkoop - gifvrij, gecertificeerd",
+    //     "Verkoop - gifvrij, niet gecertificeerd",
+    //     "Verkoop - grotendeels gifvrij",
+    //     "Verkoop - soms gifvrij",
+    //   ],
+    // };
+
+    // ═══════════════════════════════════════════
+    // SVG icoon generator
+    // ═══════════════════════════════════════════
+
+    function buildSVG(iconType, color) {
+      const pin = "M50 5 C27 5 8 24 8 47 C8 70 50 115 50 115 C50 115 92 70 92 47 C92 24 73 5 50 5 Z";
+
+      const symbols = {
+        "bloem": `
+    <ellipse cx="50" cy="28" rx="7" ry="10" fill="white"/>
+    <ellipse cx="63.9" cy="36" rx="7" ry="10" transform="rotate(60 63.9 36)" fill="white"/>
+    <ellipse cx="63.9" cy="52" rx="7" ry="10" transform="rotate(120 63.9 52)" fill="white"/>
+    <ellipse cx="50" cy="60" rx="7" ry="10" fill="white"/>
+    <ellipse cx="36.1" cy="52" rx="7" ry="10" transform="rotate(60 36.1 52)" fill="white"/>
+    <ellipse cx="36.1" cy="36" rx="7" ry="10" transform="rotate(120 36.1 36)" fill="white"/>
+    <circle cx="50" cy="44" r="9" fill="white"/>
+    <circle cx="50" cy="44" r="5" fill="${color}"/>`,
+
+        "bloem-huis": `
+    <polygon points="50,17 72,31 28,31" fill="white"/>
+    <rect x="31" y="31" width="38" height="28" rx="2" fill="white"/>
+    <ellipse cx="50" cy="36" rx="4" ry="5.5" fill="${color}"/>
+    <ellipse cx="57.8" cy="40" rx="4" ry="5.5" transform="rotate(60 57.8 40)" fill="${color}"/>
+    <ellipse cx="57.8" cy="48" rx="4" ry="5.5" transform="rotate(120 57.8 48)" fill="${color}"/>
+    <ellipse cx="50" cy="52" rx="4" ry="5.5" fill="${color}"/>
+    <ellipse cx="42.2" cy="48" rx="4" ry="5.5" transform="rotate(60 42.2 48)" fill="${color}"/>
+    <ellipse cx="42.2" cy="40" rx="4" ry="5.5" transform="rotate(120 42.2 40)" fill="${color}"/>
+    <circle cx="50" cy="44" r="5.5" fill="${color}"/>
+    <circle cx="50" cy="44" r="3" fill="white"/>`,
+
+        "appel": `
+        <g transform="translate(50,0) scale(0.85,1) translate(-50,0)">
+    <path d="M50,29 C50,29 52,22 57,20 C57,24 54,27 50,30 Z" fill="white"/>
+    <path d="M34,31 C28,31 22,37 22,45 C22,57 31,67 40,67 C43,67 46,65 50,65 C54,65 57,67 60,67 C69,67 78,57 78,45 C78,37 72,31 66,31 C63,31 60,33 50,33 C40,33 37,31 34,31 Z" fill="white"/>
+    </g>`,
+
+        "appel-huis": `
+    <polygon points="50,17 72,31 28,31" fill="white"/>
+    <rect x="31" y="31" width="38" height="28" rx="2" fill="white"/>
+    <g transform="translate(50,0) scale(0.85,1) translate(-50,0)">
+    <path d="M50,36 C50,36 52,32 55,31 C55,33 53,35 50,36 Z" fill="${color}"/>
+    <path d="M42,37 C38,37 35,40 35,44 C35,50 39,55 44,55 C46,55 47,54 50,54 C53,54 54,55 56,55 C61,55 65,50 65,44 C65,40 62,37 58,37 C56,37 54,38 50,38 C46,38 44,37 42,37 Z" fill="${color}"/>
+    </g>`,
+      };
+
+      const sym = symbols[iconType] || symbols["bloem"];
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="40" height="48"><path d="${pin}" fill="${color}"/>${sym}</svg>`;
+    }
+
+    function svgToUri(svg) {
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+
+    function makeIcon(category) {
+      const cfg = CATEGORY_CONFIG[category] || { color: DEFAULT_COLOR, icon: "bloem" };
+      return L.icon({
+        iconUrl: svgToUri(buildSVG(cfg.icon, cfg.color)),
+        iconSize: [40, 48],
+        iconAnchor: [20, 48],
+        popupAnchor: [0, -50],
+        shadowUrl: '',
+      });
+    }
 
     // ═══════════════════════════════════════════
     // Kaart & lagen
@@ -585,7 +721,6 @@
       activeBase = which === 'osm' ? osm : pdok;
       activeBase.addTo(map);
       if (overlayActive) osmLabels.addTo(map);
-
       document.getElementById('layer-osm').classList.toggle('active', which === 'osm');
       document.getElementById('layer-pdok').classList.toggle('active', which === 'pdok');
     }
@@ -598,23 +733,13 @@
     }
 
     // ═══════════════════════════════════════════
-    // Iconen & popups
+    // Popup opbouwen
     // ═══════════════════════════════════════════
-
-    function makeIcon(category) {
-      const url = ICON_MAP[category] || DEFAULT_ICON;
-      return L.icon({
-        iconUrl: url,
-        iconSize: ICON_SIZE,
-        iconAnchor: [ICON_SIZE[0] / 2, ICON_SIZE[1]],
-        popupAnchor: [0, -(ICON_SIZE[1] + 4)],
-        shadowUrl: '',
-      });
-    }
 
     function buildPopup(props) {
       const category = props[PROP_CATEGORY] || "";
-      const iconUrl = ICON_MAP[category] || DEFAULT_ICON;
+      const cfg = CATEGORY_CONFIG[category] || { color: DEFAULT_COLOR, icon: "bloem" };
+      const iconUri = svgToUri(buildSVG(cfg.icon, cfg.color));
       const name = props[PROP_NAME] || "";
       const address = props[PROP_ADDRESS] || "";
 
@@ -632,7 +757,7 @@
       return `
         <div class="popup-inner">
           <div class="popup-header">
-            <img class="popup-icon" src="${iconUrl}" alt="${category}" onerror="this.style.display='none'">
+            <img class="popup-icon" src="${iconUri}" alt="${category}">
             <div class="popup-title">${name}</div>
           </div>
           <div class="popup-address">${address}</div>
@@ -642,11 +767,12 @@
     }
 
     // ═══════════════════════════════════════════
-    // Markers laden vanuit GeoJSON
+    // Markers laden + categorie telling
     // ═══════════════════════════════════════════
 
     const allMarkers = [];
     const categories = new Set();
+    const categoryCounts = {}; // ✅ meteen goed definiëren
 
     geojsonData.features.forEach(feature => {
       const props = feature.properties;
@@ -655,32 +781,64 @@
 
       categories.add(cat);
 
+      // tel categorieën direct tijdens laden
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+
       const marker = L.marker([coords[1], coords[0]], { icon: makeIcon(cat) })
         .bindPopup(buildPopup(props), { maxWidth: 300 })
         .bindTooltip(props[PROP_NAME] || props[PROP_ADDRESS] || "", {
           direction: "top",
-          offset: [0, -(ICON_SIZE[1] + 4)],
+          offset: [0, -52],
         });
 
       marker.addTo(map);
       allMarkers.push({ marker, category: cat });
     });
 
+    // zoom naar data
     if (allMarkers.length > 0) {
       const group = L.featureGroup(allMarkers.map(m => m.marker));
       map.fitBounds(group.getBounds(), { padding: [40, 40] });
     }
 
     // ═══════════════════════════════════════════
-    // Filter knoppen
+    // Matrix filters
     // ═══════════════════════════════════════════
 
-    const activeCategories = new Set(categories);
-    const countBadge = document.getElementById("count-badge");
+    const matrixContainer = document.getElementById("filter-matrix");
 
+    // kolommen (status)
+    const STATUS_LABELS = [
+      "Gifvrij ✓",
+      "Gifvrij",
+      "Meestal",
+      "Soms"
+    ];
+
+    // rijen (groepen)
+    const ROWS = [
+      "Pluktuin / kwekerij",
+      "Bloemist",
+      "Productie / oogsttuin",
+      "Verkoop"
+    ];
+
+    // mapping status → label key
+    const STATUS_KEYS = [
+      "gifvrij, gecertificeerd",
+      "gifvrij, niet gecertificeerd",
+      "grotendeels gifvrij",
+      "soms gifvrij"
+    ];
+
+    // actieve filters
+    const activeCategories = new Set(categories);
+
+    // teller
     function updateCount() {
       const visible = allMarkers.filter(m => activeCategories.has(m.category)).length;
-      countBadge.textContent = `${visible} van de ${allMarkers.length} locaties zichtbaar`;
+      document.getElementById("count-badge").textContent =
+        `${visible} van de ${allMarkers.length} locaties zichtbaar`;
     }
 
     function applyFilter() {
@@ -690,36 +848,49 @@
       updateCount();
     }
 
-    Object.entries(GROUPS).forEach(([containerId, cats]) => {
-      const container = document.getElementById(containerId);
-      if (!container) return;
+    // ───────────
+    // Matrix bouwen
+    // ───────────
 
-      cats.forEach(cat => {
-        const color = COLOR_MAP[cat] || DEFAULT_COLOR;
-        const iconUrl = ICON_MAP[cat] || DEFAULT_ICON;
+    // lege hoek
+    const corner = document.createElement("div");
+    corner.className = "matrix-corner";
+    matrixContainer.appendChild(corner);
+
+    // kolom headers
+    STATUS_LABELS.forEach(label => {
+      const el = document.createElement("div");
+      el.className = "matrix-header";
+      el.textContent = label;
+      matrixContainer.appendChild(el);
+    });
+
+    // rijen + knoppen
+    ROWS.forEach(row => {
+
+      // rij label
+      const rowLabel = document.createElement("div");
+      rowLabel.className = "matrix-row-label";
+      rowLabel.textContent = row;
+      matrixContainer.appendChild(rowLabel);
+
+      // kolommen
+      STATUS_KEYS.forEach(status => {
+        const cat = `${row} - ${status}`;
+        const cfg = CATEGORY_CONFIG[cat] || { color: DEFAULT_COLOR, icon: "bloem" };
+        const iconUri = svgToUri(buildSVG(cfg.icon, cfg.color));
+        const count = categoryCounts[cat] || 0;
 
         const btn = document.createElement("button");
         btn.className = "filter-btn active";
-        btn.style.setProperty("--cat-color", color);
+        btn.style.setProperty("--cat-color", cfg.color);
 
+        btn.innerHTML = `
+  <img src="${iconUri}">
+  <div class="filter-count">${count}</div>
+`;
 
-        const LABEL_MAP = {
-          "Bloem - groen": "100% Gifvrij",
-          "Bloem - geel": "niet biologisch",
-          "Bloem - oranje": "soms gifvrij",
-          "Bloem huis - groen": "100% Gifvrij",
-          "Bloem huis - geel": "deels gifvrij",
-          "Bloem huis - oranje": "soms gifvrij",
-          "Appel - groen": "100% Gifvrij",
-          "Appel - geel": "niet biologisch",
-          "Appel - oranje": "soms gifvrij",
-          "Appel huis - groen": "100% Gifvrij",
-          "Appel huis - geel": "deels gifvrij",
-          "Appel huis - oranje": "soms gifvrij",
-        };
-
-        const label = LABEL_MAP[cat] || (cat.includes(" - ") ? cat.split(" - ").pop() : cat);
-        btn.innerHTML = `<img src="${iconUrl}" alt="" onerror="this.style.display='none'">${label}`;
+        if (count === 0) btn.disabled = true;
 
         btn.addEventListener("click", () => {
           if (activeCategories.has(cat)) {
@@ -732,26 +903,29 @@
           applyFilter();
         });
 
-        container.appendChild(btn);
+        matrixContainer.appendChild(btn);
       });
+
     });
 
     updateCount();
+
+    // ═══════════════════════════════════════════
+    // Mobiele sidebar
+    // ═══════════════════════════════════════════
 
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("open");
       document.getElementById("sidebar-overlay").classList.toggle("open");
     }
-    // Voorkom dat klikken binnen de sidebar de overlay triggert
 
-    // Voorkom dat klikken binnen de sidebar de overlay triggert
     document.getElementById("sidebar").addEventListener("click", function (e) {
       e.stopPropagation();
     });
+
     document.getElementById("sidebar-overlay").addEventListener("click", function () {
       toggleSidebar();
     });
-
 
   </script>
 </body>
