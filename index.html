@@ -35,7 +35,8 @@
         right: 0;
         height: 100vh;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;  /* ← voeg dit toe voor iOS */
+        -webkit-overflow-scrolling: touch;
+        /* ← voeg dit toe voor iOS */
         transform: translateX(100%);
         transition: transform 0.3s ease;
         z-index: 1500;
@@ -459,6 +460,19 @@
     .leaflet-control-layers {
       display: none;
     }
+
+    a.unified-link {
+      color: #60a5fa;
+      /* zelfde als credits (pas aan indien nodig) */
+      text-decoration: none;
+      border-bottom: 1px solid rgba(96, 165, 250, 0.4);
+      transition: all 0.15s ease;
+    }
+
+    a.unified-link:hover {
+      color: #93c5fd;
+      border-bottom-color: rgba(147, 197, 253, 0.8);
+    }
   </style>
 </head>
 
@@ -474,9 +488,10 @@
     <div class="sidebar-title">
       <h1>🌸 Gifvrije Bloemen</h1>
       <p>Kaartoverzicht van productielocaties en verkooppunten van gifvrije bloemen en voedsel in de
-        omgeving Ede-Wageningen-Arnhem. Gemaakt n.a.v. de inspiratieavond op 26 maart 2026 in de Arboretumkerk in Wageningen. </p>
+        omgeving Ede-Wageningen-Arnhem. Gemaakt n.a.v. de inspiratieavond op 26 maart 2026 in de Arboretumkerk in
+        Wageningen. </p>
     </div>
-    
+
 
 
     <div class="sidebar-section" style="flex:1">
@@ -486,13 +501,30 @@
 
       <div id="count-badge"></div>
     </div>
-    
+
     <div class="sidebar-title">
       <h1>ℹ️ Toelichting</h1>
-      <p>Hierboven zijn vier categorieën te vinden waarop de locatie gescoord is op mate van gifvrij zijn. De donkergroene locaties zijn 100% gifvrij en ook hiervoor gecertificeerd met het biologisch keurmerk (hieronder aangeduid als "Gifvrij ✓"). 
-        De lichtgroene locaties zijn in zelfverklaard gifvrij maar zonder certificaat (hieronder aangeduid als "Gifvrij"). De oranje locaties zijn grotendeels gifvrij, maar niet geheel of niet voor alle producten (hieronder aangeduid als "Meestal"). 
-        De gele locaties zijn deels gifvrij, wat betekent dat een selectie van het assortiment gifvrij is of alleen een deel van het jaar (hieronder aangeduid als "Soms").
-       </p>
+      <p>Hierboven zijn vier categorieën te vinden waarop de locatie gescoord is op mate van gifvrij zijn. De
+        donkergroene locaties zijn 100% gifvrij en ook hiervoor gecertificeerd met het biologisch keurmerk (hieronder
+        aangeduid als "Gifvrij ✓").
+        De lichtgroene locaties zijn in zelfverklaard gifvrij maar zonder certificaat (hieronder aangeduid als
+        "Gifvrij"). De oranje locaties zijn grotendeels gifvrij, maar niet geheel of niet voor alle producten (hieronder
+        aangeduid als "Meestal").
+        De gele locaties zijn deels gifvrij, wat betekent dat een selectie van het assortiment gifvrij is of alleen een
+        deel van het jaar (hieronder aangeduid als "Soms").
+      </p>
+    </div>
+
+    <div class="sidebar-title">
+      <h1> 🌐 Online locaties </h1>
+      <p>Sommige initiatieven zijn enkel online actief en kennen geen fysieke locatie maar kunnen wel je helpen aan
+        gifvrije producten. Kijk gerust eens bij;
+        <a href="https://biobloemist.nl/" class="unified-link">Bio Bloemist</a>,
+        <a href="https://emilias.nl" class="unified-link">Emilia’s bloemen</a>,
+        <a href="https://wilderful.nl" class="unified-link">Wilderful</a>,
+        <a href="https://sprinklr.co/" class="unified-link">Sprinklr</a>,
+        <a href="https://www.naturalbulbs.nl/" class="unified-link">Natural Bulbs</a>,
+      </p>
     </div>
 
     <div class="sidebar-section">
@@ -519,8 +551,8 @@
     </div>
 
     <div class="sidebar-credits">
-      © 2026 CHappyhill | V3 | <a href="https://groenekerken.nl/">Groene Kerken</a><br>
-      Contact: <a href="mailto:jouw@email.nl">André Noorlander</a>
+      © 2026 CHappyhill | V4 | <a href="https://groenekerken.nl/" class="unified-link">Groene Kerken</a><br>
+      Contact: <a href="mailto:jjkessler@planet.nl" class="unified-link">Jan Joost Kessler</a>
     </div>
 
   </div>
