@@ -487,9 +487,8 @@
 
     <div class="sidebar-title">
       <h1>🌸 Gifvrije Bloemen</h1>
-      <p>Kaartoverzicht van productielocaties en verkooppunten van gifvrije bloemen en voedsel in de
-        omgeving Ede-Wageningen-Arnhem. Gemaakt n.a.v. de inspiratieavond op 26 maart 2026 in de Arboretumkerk in
-        Wageningen. </p>
+      <p>Kaartoverzicht van productielocaties en verkooppunten van bloemen en voedsel met minder of geen gebruik van giftige bestrijdingsmiddelen, 
+        in de omgeving Ede-Wageningen-Arnhem. Gemaakt n.a.v. de inspiratieavond op 26 maart 2026 in de Arboretumkerk in Wageningen. </p>
     </div>
 
 
@@ -505,25 +504,27 @@
     <div class="sidebar-title">
       <h1>ℹ️ Toelichting</h1>
       <p>Hierboven zijn vier categorieën te vinden waarop de locatie gescoord is op mate van gifvrij zijn. De
-        donkergroene locaties zijn 100% gifvrij en ook hiervoor gecertificeerd met het biologisch keurmerk (hieronder
+        donkergroene locaties zijn 100% gifvrij en ook hiervoor gecertificeerd met het biologisch keurmerk (hierboven
         aangeduid als "Gifvrij ✓").
-        De lichtgroene locaties zijn in zelfverklaard gifvrij maar zonder certificaat (hieronder aangeduid als
-        "Gifvrij"). De oranje locaties zijn grotendeels gifvrij, maar niet geheel of niet voor alle producten (hieronder
+        De lichtgroene locaties zijn in zelfverklaard gifvrij maar zonder certificaat (hierboven aangeduid als
+        "Gifvrij"). De oranje locaties zijn grotendeels gifvrij, maar niet geheel of niet voor alle producten (hierboven
         aangeduid als "Meestal").
         De gele locaties zijn deels gifvrij, wat betekent dat een selectie van het assortiment gifvrij is of alleen een
-        deel van het jaar (hieronder aangeduid als "Soms").
+        deel van het jaar (hierboven aangeduid als "Soms").
       </p>
+           
     </div>
 
     <div class="sidebar-title">
       <h1> 🌐 Online locaties </h1>
-      <p>Sommige initiatieven zijn enkel online actief en kennen geen fysieke locatie maar kunnen wel je helpen aan
-        gifvrije producten. Kijk gerust eens bij;
+      <p>Sommige initiatieven zijn enkel online actief en kennen geen fysieke locatie maar kunnen je wel helpen aan gifvrije bloemen. 
+        Voor lokale gifvrije bloemen: 
         <a href="https://biobloemist.nl/" class="unified-link">Bio Bloemist</a>,
-        <a href="https://emilias.nl" class="unified-link">Emilia’s bloemen</a>,
+        <a href="https://emilias.nl" class="unified-link">Emilia’s bloemen</a>. 
+        Voor landelijke websites: 
         <a href="https://wilderful.nl" class="unified-link">Wilderful</a>,
         <a href="https://sprinklr.co/" class="unified-link">Sprinklr</a>,
-        <a href="https://www.naturalbulbs.nl/" class="unified-link">Natural Bulbs</a>,
+        <a href="https://www.naturalbulbs.nl/" class="unified-link">Natural Bulbs</a>.
       </p>
     </div>
 
@@ -551,8 +552,8 @@
     </div>
 
     <div class="sidebar-credits">
-      © 2026 CHappyhill | V4 | <a href="https://groenekerken.nl/" class="unified-link">Groene Kerken</a><br>
-      Contact: <a href="mailto:jjkessler@planet.nl" class="unified-link">Jan Joost Kessler</a>
+      © 2026 CHappyhill | V5 | <a href="https://groenekerken.nl/" class="unified-link">Groene Kerken</a><br>
+      Voor rectificaties of aanvullingen, contacteer: <a href="mailto:jjkessler@planet.nl" class="unified-link">Jan Joost Kessler</a>
     </div>
 
   </div>
@@ -574,14 +575,14 @@
     const STATUS_ORDER = [
       "gifvrij, gecertificeerd",
       "gifvrij, niet gecertificeerd",
-      "grotendeels gifvrij",
+      "meestal gifvrij",
       "soms gifvrij"
     ];
 
     const COLORS = {
       gecertificeerd: "#2d9e4f",
       niet_gecertificeerd: "#7bc47f",
-      grotendeels: "#f97316",
+      meestal: "#f97316",
       soms: "#eab308",
     };
     const DEFAULT_COLOR = "#60a5fa";
@@ -590,16 +591,16 @@
     const CATEGORY_CONFIG = {
       "Pluktuin / kwekerij - gifvrij, gecertificeerd": { color: COLORS.gecertificeerd, icon: "bloem" },
       "Pluktuin / kwekerij - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "bloem" },
-      "Pluktuin / kwekerij - grotendeels gifvrij": { color: COLORS.grotendeels, icon: "bloem" },
+      "Pluktuin / kwekerij - meestal gifvrij": { color: COLORS.meestal, icon: "bloem" },
       "Pluktuin / kwekerij - soms gifvrij": { color: COLORS.soms, icon: "bloem" },
       "Bloemist - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "bloem-huis" },
-      "Bloemist - grotendeels gifvrij": { color: COLORS.grotendeels, icon: "bloem-huis" },
+      "Bloemist - meestal gifvrij": { color: COLORS.meestal, icon: "bloem-huis" },
       "Bloemist - soms gifvrij": { color: COLORS.soms, icon: "bloem-huis" },
       "Productie / oogsttuin - gifvrij, gecertificeerd": { color: COLORS.gecertificeerd, icon: "appel" },
       "Productie / oogsttuin - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "appel" },
       "Verkoop - gifvrij, gecertificeerd": { color: COLORS.gecertificeerd, icon: "appel-huis" },
       "Verkoop - gifvrij, niet gecertificeerd": { color: COLORS.niet_gecertificeerd, icon: "appel-huis" },
-      "Verkoop - grotendeels gifvrij": { color: COLORS.grotendeels, icon: "appel-huis" },
+      "Verkoop - meestal gifvrij": { color: COLORS.meestal, icon: "appel-huis" },
       "Verkoop - soms gifvrij": { color: COLORS.soms, icon: "appel-huis" },
     };
 
@@ -607,16 +608,16 @@
     const LABEL_MAP = {
       "Pluktuin / kwekerij - gifvrij, gecertificeerd": "Gifvrij ✓",
       "Pluktuin / kwekerij - gifvrij, niet gecertificeerd": "Gifvrij",
-      "Pluktuin / kwekerij - grotendeels gifvrij": "Grotendeels",
+      "Pluktuin / kwekerij - meestal gifvrij": "meestal",
       "Pluktuin / kwekerij - soms gifvrij": "Soms",
       "Bloemist - gifvrij, niet gecertificeerd": "Gifvrij",
-      "Bloemist - grotendeels gifvrij": "Grotendeels",
+      "Bloemist - meestal gifvrij": "meestal",
       "Bloemist - soms gifvrij": "Soms",
       "Productie / oogsttuin - gifvrij, gecertificeerd": "Gifvrij ✓",
       "Productie / oogsttuin - gifvrij, niet gecertificeerd": "Gifvrij",
       "Verkoop - gifvrij, gecertificeerd": "Gifvrij ✓",
       "Verkoop - gifvrij, niet gecertificeerd": "Gifvrij",
-      "Verkoop - grotendeels gifvrij": "Grotendeels",
+      "Verkoop - meestal gifvrij": "meestal",
       "Verkoop - soms gifvrij": "Soms",
     };
 
@@ -638,12 +639,12 @@
     //   "filters-a": [
     //     "Pluktuin / kwekerij - gifvrij, gecertificeerd",
     //     "Pluktuin / kwekerij - gifvrij, niet gecertificeerd",
-    //     "Pluktuin / kwekerij - grotendeels gifvrij",
+    //     "Pluktuin / kwekerij - meestal gifvrij",
     //     "Pluktuin / kwekerij - soms gifvrij",
     //   ],
     //   "filters-b": [
     //     "Bloemist - gifvrij, niet gecertificeerd",
-    //     "Bloemist - grotendeels gifvrij",
+    //     "Bloemist - meestal gifvrij",
     //     "Bloemist - soms gifvrij",
     //   ],
     //   "filters-c": [
@@ -653,7 +654,7 @@
     //   "filters-d": [
     //     "Verkoop - gifvrij, gecertificeerd",
     //     "Verkoop - gifvrij, niet gecertificeerd",
-    //     "Verkoop - grotendeels gifvrij",
+    //     "Verkoop - meestal gifvrij",
     //     "Verkoop - soms gifvrij",
     //   ],
     // };
@@ -860,7 +861,7 @@
     const STATUS_KEYS = [
       "gifvrij, gecertificeerd",
       "gifvrij, niet gecertificeerd",
-      "grotendeels gifvrij",
+      "meestal gifvrij",
       "soms gifvrij"
     ];
 
